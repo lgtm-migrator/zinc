@@ -36,7 +36,10 @@ func MultiSearch(ctx context.Context, req bluge.SearchRequest, readers ...*bluge
 	docs := make(chan *search.DocumentMatch, req.Collector().Size()*len(readers))
 	aggs := make(chan *search.Bucket, len(readers))
 
-	docList := &DocumentList{}
+	docList := &DocumentList{
+		docs: make([]*search.DocumentMatch, 0, req.Collector().Size()*len(readers)),
+	}
+
 	eg2 := &errgroup.Group{}
 	eg2.Go(func() error {
 		for doc := range docs {
@@ -55,10 +58,10 @@ func MultiSearch(ctx context.Context, req bluge.SearchRequest, readers ...*bluge
 		return nil
 	})
 
-	for _, r := range readers {
-		r := r
+	for i := range readers {
+		j := i
 		eg.Go(func() error {
-			dmi, err := r.Search(ctx, req)
+			dmi, err := readers[j].Search(ctx, req)
 			if err != nil {
 				return err
 			}

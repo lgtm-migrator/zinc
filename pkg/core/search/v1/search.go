@@ -22,6 +22,7 @@ import (
 	"github.com/blugelabs/bluge"
 	"github.com/blugelabs/bluge/search/highlight"
 	"github.com/rs/zerolog/log"
+	zb "github.com/zinclabs/zinc/pkg/bluge/search"
 
 	"github.com/zinclabs/zinc/pkg/config"
 	"github.com/zinclabs/zinc/pkg/core"
@@ -114,7 +115,7 @@ func Search(index *core.Index, iQuery *ZincQuery) (*SearchResponse, error) {
 		}
 	}()
 
-	dmi, err := bluge.MultiSearch(context.Background(), searchRequest, readers...)
+	dmi, err := zb.MultiSearch(context.Background(), searchRequest, readers...)
 	if err != nil {
 		log.Printf("error executing search: %s", err.Error())
 	}
