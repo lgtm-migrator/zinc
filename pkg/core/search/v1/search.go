@@ -17,6 +17,7 @@ package v1
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/blugelabs/bluge"
@@ -180,7 +181,7 @@ func Search(index *core.Index, iQuery *ZincQuery) (*SearchResponse, error) {
 	resp.Hits.Total.Value = int(dmi.Aggregations().Count())
 	resp.Hits.MaxScore = dmi.Aggregations().Metric("max_score")
 	resp.Hits.Hits = hits
-
+	fmt.Printf("resp := %+v", resp)
 	if len(iQuery.Aggregations) > 0 {
 		resp.Aggregations, err = ParseAggregations(dmi.Aggregations())
 		if err != nil {
